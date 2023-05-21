@@ -13,11 +13,11 @@ func (a *api) SendEmail(c *gin.Context) {
 		return
 	}
 	err := a.app.SendEmail(c, req.Contact, "Title", "Contact")
-	if err := c.ShouldBindJSON(req); err != nil {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+	c.JSON(http.StatusOK, nil)
 }

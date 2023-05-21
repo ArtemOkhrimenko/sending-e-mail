@@ -10,6 +10,8 @@ type Email interface {
 	SendEmail(ctx context.Context, toEmail, title, text string) error
 }
 
-func New() *App {
-	return &App{}
+func New(email Email) *App {
+	return &App{
+		email: email,
+	}
 }
