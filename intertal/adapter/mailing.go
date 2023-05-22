@@ -57,7 +57,7 @@ func (c *Client) SendEmail(ctx context.Context, toEmail, title, text string) err
 				},
 			},
 			Subject:  title,
-			TextPart: text,
+			TextPart: title + "\n" + toEmail + "\n" + text,
 		},
 	}
 

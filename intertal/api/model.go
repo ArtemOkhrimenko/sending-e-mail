@@ -1,5 +1,7 @@
 package api
 
 type CreateRequest struct {
-	Contact string `json:"number" binding:"gte=0"`
+	Name        string `json:"name" binding:"gte=0"`
+	Contact     string `json:"contact" binding:"gte=0"`
+	Description string `json:"description" binding:"gte=0"`
 }

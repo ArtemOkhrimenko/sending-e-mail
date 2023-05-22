@@ -21,7 +21,12 @@ var (
 )
 
 type config struct {
-	Email emailConfig `yaml:"email"`
+	Server server      `yaml:"server"`
+	Email  emailConfig `yaml:"email"`
+}
+type server struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 }
 type emailConfig struct {
 	APIKeyPublic  string `yaml:"api_key_public"`
@@ -34,16 +39,35 @@ func main() {
 
 	fmt.Println("Server is started..")
 
-	mail, err := start(*cfgFile)
+	err := start(ctx, *cfgFile)
 	if err != nil {
 		log.Fatal("shutdown", err)
 	}
+}
 
-	application := app.New(mail)
+func start(ctx context.Context, configPath string) error {
+	cfgFile, err := os.Open(configPath)
+	if err != nil {
+		return fmt.Errorf("os.Open: %w", err)
+	}
+
+	cfg := config{}
+	err = yaml.NewDecoder(cfgFile).Decode(&cfg)
+	if err != nil {
+		return fmt.Errorf("yaml.NewDecoder.Decode: %w", err)
+	}
+
+	emailClient := mailing.New(mailing.Config{
+		APIKeyPublic:   cfg.Email.APIKeyPublic,
+		APIHostPrivate: cfg.Email.APIKeyPrivate,
+		Mailbox:        cfg.Email.Mailbox,
+	})
+
+	application := app.New(emailClient)
 	rout := api.New(application)
 
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    cfg.Server.Port,
 		Handler: rout,
 	}
 
@@ -60,25 +84,6 @@ func main() {
 			panic(fmt.Sprintf("srv.Shutdown: %s", err.Error()))
 		}
 	}
-}
 
-func start(configPath string) (*mailing.Client, error) {
-	cfgFile, err := os.Open(configPath)
-	if err != nil {
-		return nil, fmt.Errorf("os.Open: %w", err)
-	}
-
-	cfg := config{}
-	err = yaml.NewDecoder(cfgFile).Decode(&cfg)
-	if err != nil {
-		return nil, fmt.Errorf("yaml.NewDecoder.Decode: %w", err)
-	}
-
-	emailClient := mailing.New(mailing.Config{
-		APIKeyPublic:   cfg.Email.APIKeyPublic,
-		APIHostPrivate: cfg.Email.APIKeyPrivate,
-		Mailbox:        cfg.Email.Mailbox,
-	})
-
-	return emailClient, nil
+	return nil
 }
