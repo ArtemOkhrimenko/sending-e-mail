@@ -7,7 +7,7 @@ import (
 )
 
 type Application interface {
-	SendEmail(ctx context.Context, toEmail string, title string, text string) error
+	SendEmail(ctx context.Context, name, contact, text string) error
 }
 
 type api struct {

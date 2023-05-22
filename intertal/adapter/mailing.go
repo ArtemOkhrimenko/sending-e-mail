@@ -19,6 +19,7 @@ type (
 		APIKeyPublic   string
 		APIHostPrivate string
 		Mailbox        string
+		Email          string
 	}
 
 	// Client for send email.
@@ -44,7 +45,7 @@ func New(cfg Config) *Client {
 }
 
 // SendEmail send email.
-func (c *Client) SendEmail(ctx context.Context, toEmail, title, text string) error {
+func (c *Client) SendEmail(ctx context.Context, text string) error {
 	messagesInfo := []mailjet.InfoMessagesV31{
 		{
 			From: &mailjet.RecipientV31{
@@ -53,11 +54,11 @@ func (c *Client) SendEmail(ctx context.Context, toEmail, title, text string) err
 			},
 			To: &mailjet.RecipientsV31{
 				mailjet.RecipientV31{
-					Email: toEmail,
+					Email: c.cfg.Email,
 				},
 			},
-			Subject:  title,
-			TextPart: title + "\n" + toEmail + "\n" + text,
+			Subject:  "New request",
+			TextPart: text,
 		},
 	}
 

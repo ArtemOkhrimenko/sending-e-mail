@@ -7,7 +7,7 @@ type App struct {
 }
 
 type Email interface {
-	SendEmail(ctx context.Context, toEmail, title, text string) error
+	SendEmail(ctx context.Context, text string) error
 }
 
 func New(email Email) *App {

@@ -12,7 +12,7 @@ func (a *api) SendEmail(c *gin.Context) {
 
 		return
 	}
-	err := a.app.SendEmail(c, req.Contact, req.Name, req.Description)
+	err := a.app.SendEmail(c, req.Name, req.Contact, req.Description)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

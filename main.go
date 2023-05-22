@@ -32,6 +32,7 @@ type emailConfig struct {
 	APIKeyPublic  string `yaml:"api_key_public"`
 	APIKeyPrivate string `yaml:"api_key_private"`
 	Mailbox       string `yaml:"mailbox"`
+	Email         string `yaml:"email"`
 }
 
 func main() {
@@ -61,6 +62,7 @@ func start(ctx context.Context, configPath string) error {
 		APIKeyPublic:   cfg.Email.APIKeyPublic,
 		APIHostPrivate: cfg.Email.APIKeyPrivate,
 		Mailbox:        cfg.Email.Mailbox,
+		Email:          cfg.Email.Email,
 	})
 
 	application := app.New(emailClient)
